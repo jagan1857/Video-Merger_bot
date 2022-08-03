@@ -56,10 +56,10 @@ async def start_handler(bot: Client, m: Message):
         quote=True,
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("👥 𝐒𝐨𝐮𝐫𝐜𝐞 👥", url="https://GitHub.com/PredatorHackerzZ/Video-Merger_Bot")],
-                [InlineKeyboardButton("⭕ 𝐒𝐮𝐩𝐩𝐨𝐫𝐭 ⭕", url="https://t.me/TeleRoid14"),
-                 InlineKeyboardButton("⭕ 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 ⭕", url="https://t.me/TeleRoidGroup")],
-                [InlineKeyboardButton("🛠 𝐒𝐞𝐭𝐭𝐢𝐧𝐠𝐬 🛠", callback_data="openSettings")]
+                [InlineKeyboardButton("👥 Source 👥", url="https://GitHub.com/PredatorHackerzZ/Video-Merger_Bot")],
+                [InlineKeyboardButton("⭕ Support ⭕", url="https://t.me/TeleRoid14"),
+                 InlineKeyboardButton("⭕ Channel ⭕", url="https://t.me/TeleRoidGroup")],
+                [InlineKeyboardButton("🛠 Settings 🛠", callback_data="openSettings")]
             ]
         )
     )
@@ -82,13 +82,13 @@ async def videos_handler(bot: Client, m: Message):
         return
     input_ = f"{Config.DOWN_PATH}/{m.from_user.id}/input.txt"
     if os.path.exists(input_):
-        await m.reply_text("𝐒𝐨𝐫𝐫𝐲 𝐃𝐞𝐚𝐫,\n𝐀𝐥𝐫𝐞𝐚𝐝𝐲 𝐎𝐧𝐞 𝐢𝐧 𝐏𝐫𝐨𝐠𝐫𝐞𝐬𝐬!\n𝐃𝐨𝐧'𝐭 𝐒𝐩𝐚𝐦 𝐏𝐥𝐨𝐱.\n@TheTeleRoid")
+        await m.reply_text("Sorry Dear ,\nAlready One Progress Is Going On!\nDon't Spam Pleamse.\n@TheTeleRoid")
         return
     isInGap, sleepTime = await CheckTimeGap(m.from_user.id)
     if isInGap is True:
         await m.reply_text(f"Sorry Sir,\nNo Flooding Allowed!\nSend Video After `{str(sleepTime)}s` !!", quote=True)
     else:
-        editable = await m.reply_text("𝐏𝐥𝐞𝐚𝐬𝐞 𝐖𝐚𝐢𝐭 ...", quote=True)
+        editable = await m.reply_text("wait For A While Please...", quote=True)
         MessageText = "Okay,\nNow Send Me Next Video or Press **Merge Now** Button!"
         if QueueDB.get(m.from_user.id, None) is None:
             QueueDB.update({m.from_user.id: []})
@@ -129,8 +129,8 @@ async def photo_handler(bot: Client, m: Message):
         text="Your Thumbnail Saved Successfully!",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("𝐒𝐡𝐨𝐰 𝐒𝐚𝐯𝐞𝐝 𝐓𝐡𝐮𝐦𝐛𝐧𝐚𝐢𝐥", callback_data="showThumbnail")],
-                [InlineKeyboardButton("𝐃𝐞𝐥𝐞𝐭𝐞 𝐬𝐚𝐯𝐞𝐝 𝐓𝐡𝐮𝐦𝐛𝐧𝐚𝐢𝐥", callback_data="deleteThumbnail")]
+                [InlineKeyboardButton("Show Saved Thumbnail", callback_data="showThumbnail")],
+                [InlineKeyboardButton("Delete Thumbnai", callback_data="deleteThumbnail")]
             ]
         )
     )
@@ -282,8 +282,8 @@ async def callback_handlers(bot: Client, cb: CallbackQuery):
             text="Do you like to rename file?\nChoose a Button from below:",
             reply_markup=InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton("𝐑𝐞𝐧𝐚𝐦𝐞 𝐅𝐢𝐥𝐞", callback_data="renameFile_Yes")],
-                    [InlineKeyboardButton("𝐊𝐞𝐞𝐩 𝐃𝐞𝐟𝐚𝐮𝐥𝐭 𝐅𝐢𝐥𝐞", callback_data="renameFile_No")]
+                    [InlineKeyboardButton("Rename The Media", callback_data="renameFile_Yes")],
+                    [InlineKeyboardButton("Keep Default Name ", callback_data="renameFile_No")]
                 ]
             )
         )
@@ -302,7 +302,7 @@ async def callback_handlers(bot: Client, cb: CallbackQuery):
                 reply_to_message_id=message_.message_id,
                 reply_markup=InlineKeyboardMarkup(
                     [
-                        [InlineKeyboardButton("𝐑𝐞𝐦𝐨𝐯𝐞 𝐅𝐢𝐥𝐞", callback_data=f"removeFile_{str(message_.message_id)}")]
+                        [InlineKeyboardButton("Remove File ", callback_data=f"removeFile_{str(message_.message_id)}")]
                     ]
                 )
             )
@@ -321,7 +321,7 @@ async def callback_handlers(bot: Client, cb: CallbackQuery):
                 invite_link = await bot.create_chat_invite_link(chat_id=(int(Config.UPDATES_CHANNEL) if Config.UPDATES_CHANNEL.startswith("-100") else Config.UPDATES_CHANNEL))
             try:
                 user = await bot.get_chat_member(chat_id=(int(Config.UPDATES_CHANNEL) if Config.UPDATES_CHANNEL.startswith("-100") else Config.UPDATES_CHANNEL), user_id=cb.message.chat.id)
-                if user.status == "kicked":
+                if user.status == "banned":
                     await cb.message.edit(
                         text="Sorry Son, You are Banned to use me. Contact my [Support Group](https://t.me/TeleRoid14).",
                         parse_mode="markdown",
@@ -330,14 +330,14 @@ async def callback_handlers(bot: Client, cb: CallbackQuery):
                     return
             except UserNotParticipant:
                 await cb.message.edit(
-                    text="**уσυ ѕтιℓℓ ∂ι∂η'т ʝσιη ☹️, ρℓєαѕє ʝσιη My υρ∂αтєѕ ¢нαηηєℓ тσ υѕє тнιѕ вσт!**\n\nDue to Overload, Only Channel Subscribers can use the Bot!",
+                    text="**Yoυ ѕтιℓℓ ∂ι∂η'т ʝoιη ☹️, ρℓєαѕє ʝoιη My υρ∂αтєѕ ¢нαηηєℓ тo υѕє тнιѕ вoт!**\n\nDue to Overload, Only Channel Subscribers can use the Bot!",
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
                                 InlineKeyboardButton("🤖 ʝσιη υρ∂αтєѕ ¢нαηηєℓ", url=invite_link.invite_link)
                             ],
                             [
-                                InlineKeyboardButton("🔄 яєƒяєѕн 🔄", callback_data="refreshFsub")
+                                InlineKeyboardButton("🔄 Rєƒяєѕн 🔄", callback_data="refreshFsub")
                             ]
                         ]
                     ),
@@ -354,7 +354,7 @@ async def callback_handlers(bot: Client, cb: CallbackQuery):
         await cb.message.edit(
             text=Config.START_TEXT,
             parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("📕 𝐒𝐨𝐮𝐫𝐜𝐞 ", url="https://GitHub.com/PredatorHackerzZ/Video-Merger_Bot"), InlineKeyboardButton("🌐 𝐒𝐮𝐩𝐩𝐨𝐫𝐭 𝐆𝐫𝐨𝐮𝐩", url="https://t.me/TeleRoid14")], [InlineKeyboardButton("👥 𝐁𝐨𝐭𝐬 𝐂𝐡𝐚𝐧𝐧𝐞𝐥", url="https://t.me/TeleRoidGroup")]]),
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("📕 Source Codes", url="https://GitHub.com/PredatorHackerzZ/Video-Merger_Bot"), InlineKeyboardButton("🌐 𝐒𝐮𝐩𝐩𝐨𝐫𝐭 𝐆𝐫𝐨𝐮𝐩", url="https://t.me/TeleRoid14")], [InlineKeyboardButton("👥 𝐁𝐨𝐭𝐬 𝐂𝐡𝐚𝐧𝐧𝐞𝐥", url="https://t.me/TeleRoidGroup")]]),
             disable_web_page_preview=True
         )
     elif "showThumbnail" in cb.data:
@@ -366,7 +366,7 @@ async def callback_handlers(bot: Client, cb: CallbackQuery):
                 photo=db_thumbnail,
                 reply_markup=InlineKeyboardMarkup(
                     [
-                        [InlineKeyboardButton("𝐃𝐞𝐥𝐞𝐭𝐞 𝐒𝐚𝐯𝐞𝐝 𝐓𝐡𝐮𝐦𝐛𝐧𝐚𝐢𝐥", callback_data="deleteThumbnail")]
+                        [InlineKeyboardButton("Delete Saved Thumbnail", callback_data="deleteThumbnail")]
                     ]
                 )
             )
@@ -398,7 +398,7 @@ async def callback_handlers(bot: Client, cb: CallbackQuery):
                 text="File removed from queue!",
                 reply_markup=InlineKeyboardMarkup(
                     [
-                        [InlineKeyboardButton( "🏠 𝐒𝐞𝐭𝐭𝐢𝐧𝐠𝐬", callback_data="openSettings")]
+                        [InlineKeyboardButton( " 🛠 Settings  ", callback_data="openSettings")]
                     ]
                 )
             )
